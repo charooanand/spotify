@@ -1,5 +1,3 @@
-source("code/00_packages.R")
-
 # List each folder downloaded from Spotify. 
 # Each folder contains the listening data for a 3-month window.
 tables_folders_list <- list.dirs(path = "tables")[-1]
