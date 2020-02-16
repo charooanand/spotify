@@ -31,7 +31,7 @@ save_song_count <- function(download_folder){
       dir.create(paste0("tables/", download_folder_code))
     }
     
-    write.csv(song_count, paste0("tables/", code, "/song_count.csv"))
+    write.csv(song_count, paste0("tables/", download_folder_code, "/song_count.csv"))
 }
 
 lapply(download_folders_list, save_song_count)
