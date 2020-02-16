@@ -79,7 +79,7 @@ plot_top_songs_chart <- function(tables_folder){
     dir.create(paste0("plots/", table_folder_code))
   }
   
-  ggsave(filename = "song_bar_chart",
+  ggsave(filename = "song_bar_chart.jpeg",
          plot = top_songs_chart, 
          path = paste0("plots/", table_folder_code), 
          device = "jpeg")
