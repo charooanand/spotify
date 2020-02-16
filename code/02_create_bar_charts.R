@@ -47,9 +47,9 @@ random_wes_pal <- function(){
   # Here we sample a random palette from the list
   pick_wes_pal <- wes_palettes_list[sample(1:length(wes_palettes_list), 1)]
   # And then we interpolate the discrete scale so we have enough colours
-  continuous_wes_pal <- wes_palette(pick_wes_pal, 100, type = "continuous")
+  interpolate <- wes_palette(pick_wes_pal, 30, type = "continuous")
   
-  return(continuous_wes_pal)
+  return(interpolate)
 }
 
 plot_top_songs_chart <- function(tables_folder){
@@ -58,7 +58,7 @@ plot_top_songs_chart <- function(tables_folder){
   top_songs <- read_song_count_df(tables_folder) %>%
                filter(listens >= 90)
 
-  top_songs_chart <- ggplot(data = top_songs, aes(x=reorder(song, -listens), y=listens, fill=as.factor(listens))) +
+  top_songs_chart <- ggplot(data = top_songs, aes(x=reorder(song, -listens), y=listens, fill=song)) +
                      scale_fill_manual(values = random_wes_pal()) +
                      geom_bar(stat="identity", show.legend = FALSE) +
                      theme_minimal() +
