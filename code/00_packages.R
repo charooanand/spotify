@@ -4,7 +4,8 @@ packages_vector <- c("rjson",
                      "tidylog",
                      "vroom",
                      "ggplot2",
-                     "wesanderson")
+                     "wesanderson",
+                     "RColorBrewer")
 
 #install.packages(packages_vector)
 lapply(packages_vector, require, character.only = TRUE)
