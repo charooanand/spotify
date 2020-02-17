@@ -1,7 +1,3 @@
-# List each folder downloaded from Spotify. 
-# Each folder contains the listening data for a 3-month window.
-tables_folders_list <- list.dirs(path = "tables")[-1]
-
 # List artists that I accidently fall asleep to so that we can filter them out
 zzz <- c("Death Cab for Cutie", 
          "Anna of the North",
@@ -9,10 +5,9 @@ zzz <- c("Death Cab for Cutie",
          "The Fray",
          "Wet")
 
-
-read_song_count_df <- function(tables_folder){
+read_song_count_df <- function(download_code){
   
-  song_count_df <- vroom(paste0(tables_folder, "/song_count.csv"),
+  song_count_df <- vroom(paste0("tables/", download_code, "/song_count.csv"),
                          delim = ",") %>%
                    filter(!(artistName %in% zzz))
   
@@ -52,10 +47,10 @@ random_wes_pal <- function(){
   return(interpolate)
 }
 
-plot_top_songs_chart <- function(tables_folder){
+plot_top_songs_chart <- function(download_code){
   
   # TODO Maybe a percentile cut-off is better than an absolute number?
-  top_songs <- read_song_count_df(tables_folder) %>%
+  top_songs <- read_song_count_df(download_code) %>%
                filter(listens >= 90)
 
   top_songs_chart <- ggplot(data = top_songs, aes(x=reorder(song, -listens), y=listens, fill=song)) +
@@ -65,25 +60,21 @@ plot_top_songs_chart <- function(tables_folder){
                      theme(axis.text.x = element_text(angle = 80, hjust = 1)) +
                      xlab("Song") + ylab("Number of Listens")
   
-  # Get the download folder code, without the full file path
-  table_folder_code <- str_remove(tables_folder, "tables/")
-  
-  
   # TODO this was copied from 01_. Find a way to avoid copying.
   # Save bar chart table to subfolder in plots/ folder.
   # We use Spotify's download code to name the subfolder so the file structure mirrors the raw_data/ and tables/ folder.
   # If subfolder doesn't yet exist, we create it here.
-  if (dir.exists(paste0("plots/", table_folder_code))){
+  if (dir.exists(paste0("plots/", download_code))){
     print("the subfolder for this download already exists")
   } else {
-    dir.create(paste0("plots/", table_folder_code))
+    dir.create(paste0("plots/", download_code))
   }
   
   ggsave(filename = "song_bar_chart.jpeg",
          plot = top_songs_chart, 
-         path = paste0("plots/", table_folder_code), 
+         path = paste0("plots/", download_code), 
          device = "jpeg")
 }
 
-lapply(tables_folders_list, plot_top_songs_chart)
+lapply(download_codes, plot_top_songs_chart)
 
