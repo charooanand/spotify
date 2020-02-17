@@ -5,38 +5,37 @@ zzz <- c("Death Cab for Cutie",
          "The Fray",
          "Wet")
 
-read_song_count_df <- function(download_code){
+read_count_df <- function(download_code, level){
   
-  song_count_df <- vroom(paste0("tables/", download_code, "/song_count.csv"),
+  count_df <- vroom(paste0("tables/", download_code, "/", level, "_count.csv"),
                          delim = ",") %>%
-                   filter(!(artistName %in% zzz))
+                   filter(!(artist %in% zzz))
   
-  return(song_count_df)
+  return(count_df)
   
 }
 
-plot_top_songs_chart <- function(download_code){
+plot_chart <- function(download_code, level){
   
-  # TODO Maybe a percentile cut-off is better than an absolute number?
-  top_songs <- read_song_count_df(download_code) %>%
-               filter(listens >= 90)
+  top <- read_count_df(download_code, level) %>%
+               filter(listens>quantile(listens, probs = 0.99))
 
-  top_songs_chart <- ggplot(data = top_songs, aes(x=reorder(song, -listens), y=listens, fill=song)) +
-                     scale_fill_manual(values = random_wes_pal()) +
-                     geom_bar(stat="identity", show.legend = FALSE) +
-                     theme_minimal() +
-                     theme(axis.text.x = element_text(angle = 80, hjust = 1)) +
-                     xlab("Song") + ylab("Number of Listens")
+  chart <- ggplot(data = top, aes(x=reorder(get(level), -listens), y=listens, fill=get(level))) +
+           scale_fill_manual(values = random_wes_pal()) +
+           geom_bar(stat="identity", show.legend = FALSE) +
+           theme_minimal() +
+           theme(axis.text.x = element_text(angle = 80, hjust = 1)) +
+           xlab(level) + ylab("number of listens")
   
   # Save bar chart table to subfolder in plots/ folder.
   # We use Spotify's download code to name the subfolder so the file structure mirrors the raw_data/ and tables/ folder.
   create_if_nonexistent(paste0("plots/", download_code))
   
-  ggsave(filename = "song_bar_chart.jpeg",
-         plot = top_songs_chart, 
+  ggsave(filename = paste0(level, "_bar_chart.jpeg"),
+         plot = chart, 
          path = paste0("plots/", download_code), 
          device = "jpeg")
 }
 
-lapply(download_codes, plot_top_songs_chart)
-
+lapply(download_codes, function(x) plot_chart(x, "song"))
+lapply(download_codes, function(x) plot_chart(x, "artist"))
