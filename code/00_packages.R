@@ -9,6 +9,7 @@ packages_vector <- c("rjson",
                      "vroom",
                      "ggplot2",
                      "wesanderson",
+                     "ggpubr",
                      "patchwork")
 
 #install.packages(packages_vector)
