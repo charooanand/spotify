@@ -17,13 +17,7 @@ save_song_count <- function(download_code){
     
     # Save song_count table to subfolder in tables/ folder.
     # We use Spotify's download code to name the subfolder so the file structure mirrors the raw_data/ folder.
-    # If subfolder doesn't yet exist, we create it here.
-    if (dir.exists(paste0("tables/", download_code))){
-      print("the subfolder for this download already exists")
-    } else {
-      dir.create(paste0("tables/", download_code))
-    }
-    
+    create_if_nonexistent(paste0("tables/", download_code))
     write.csv(song_count, paste0("tables/", download_code, "/song_count.csv"))
 }
 
