@@ -22,8 +22,13 @@ lapply(packages_vector, library, character.only = TRUE)
 # set up vapoRwave #
 ####################
 
+# Install vapoRwave
 devtools::install_github("moldach/vapoRwave")
 library("vapoRwave")
+
+# Import fonts
+#font_import()
+loadfonts()
 
 fonts <- c("SF Alien Encounters",
            "SF Alien Encounters Solid",
@@ -32,9 +37,6 @@ fonts <- c("SF Alien Encounters",
            "Windows Command Prompt",
            "Blade Runner Movie Font",
            "Streamster")
-
-#font_import()
-loadfonts()
 
 check_fonts_loaded <- function(font){
   testthat::test_that("fonts loaded",
@@ -60,43 +62,6 @@ get_code <- function(download_folder){
 }
 
 download_codes <- lapply(download_folders_list, get_code)
-
-
-###################################################
-# create a random wes anderson paletter generator #
-###################################################
-
-# TODO work out how to get wesanderson to return a list of the NAMES of palettes
-wes_palettes_list <- c("BottleRocket1",
-                       "BottleRocket2",
-                       "Rushmore1",
-                       "Royal1",
-                       "Royal2",
-                       "Zissou1",
-                       "Darjeeling1",
-                       "Darjeeling2",
-                       "Chevalier1",
-                       "FantasticFox1",
-                       "Moonrise1",
-                       "Moonrise2",
-                       "Moonrise3",
-                       "Cavalcanti1",
-                       "GrandBudapest1",
-                       "GrandBudapest2",
-                       "IsleofDogs1",
-                       "IsleofDogs2")
-
-# Pick a random Wes Anderson palette 
-random_wes_pal <- function(){
-  
-  # wes_palettes is a list of all the palettes
-  # Here we sample a random palette from the list
-  pick_wes_pal <- wes_palettes_list[sample(1:length(wes_palettes_list), 1)]
-  # And then we interpolate the discrete scale so we have enough colours
-  interpolate <- wes_palette(pick_wes_pal, 30, type = "continuous")
-  
-  return(interpolate)
-}
 
 ###############################################################
 # create function that creates a directory if it doesnt exist #

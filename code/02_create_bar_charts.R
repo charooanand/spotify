@@ -26,22 +26,18 @@ read_count_df <- function(download_code, level){
 plot_chart <- function(download_code, level){
   
   top <- read_count_df(download_code, level) %>%
-       # filter(listens>quantile(listens, probs = 0.99))
          head(8)
 
   chart <- ggplot(data = top, aes(x=reorder(get(level), -listens), y=listens, fill=get(level))) +
-         # scale_fill_manual(values = random_wes_pal()) +
            geom_bar(stat="identity", show.legend = FALSE) +
-           theme_minimal() +
-           theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-           xlab(level) + ylab("number of listens") + 
-           floral_shoppe() + 
-           scale_fill_floralShoppe()
+           xlab(level) + ylab("listens") + 
+           floral_shoppe() +
+           scale_fill_floralShoppe() +
+           theme(axis.text.x = element_text(angle=90, hjust=1)) +
+           theme(axis.text.y = element_text(angle=90, hjust=1))
   
   return(chart)
 }
-
-charoo <- plot_chart(download_code, level)
 
 ###############
 # save charts #
@@ -71,6 +67,6 @@ save_combined_charts <- function(download_code){
   
 }
 
-lapply(download_codes, function(x) save_separate_charts(x, "song"))
-lapply(download_codes, function(x) save_separate_charts(x, "artist"))
+# lapply(download_codes, function(x) save_separate_charts(x, "song"))
+# lapply(download_codes, function(x) save_separate_charts(x, "artist"))
 lapply(download_codes, save_combined_charts)
