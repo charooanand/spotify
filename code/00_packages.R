@@ -10,11 +10,38 @@ packages_vector <- c("rjson",
                      "ggplot2",
                      "wesanderson",
                      "ggpubr",
-                     "patchwork")
+                     "patchwork",
+                     "extrafont",
+                     "extrafontdb",
+                     "testthat")
 
 #install.packages(packages_vector)
-lapply(packages_vector, require, character.only = TRUE)
+lapply(packages_vector, library, character.only = TRUE)
 
+####################
+# set up vapoRwave #
+####################
+
+devtools::install_github("moldach/vapoRwave")
+library("vapoRwave")
+
+fonts <- c("SF Alien Encounters",
+           "SF Alien Encounters Solid",
+           "VCR OSD Mono",
+           "OCR A Extended",
+           "Windows Command Prompt",
+           "Blade Runner Movie Font",
+           "Streamster")
+
+#font_import()
+loadfonts()
+
+check_fonts_loaded <- function(font){
+  testthat::test_that("fonts loaded",
+  testthat::expect_equal(font %in% extrafont::fonts(), TRUE))
+}
+
+lapply(fonts, check_fonts_loaded)
 
 #####################################
 # get list of download folder codes #
