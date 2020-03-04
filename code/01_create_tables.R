@@ -1,7 +1,6 @@
 # Define function that reads in raw Spotify streaming history data
-read_sh_df <- function(download_code){
+read_sh_df <- function(sh_path){
   
-  sh_path <- paste0("raw_data/", download_code, "/StreamingHistory.json")
   sh_df <- fromJSON(sh_path, flatten =TRUE) %>%
            rename("song" = "trackName",
                   "artist" = "artistName") %>% 
@@ -12,13 +11,24 @@ read_sh_df <- function(download_code){
   return(sh_df)
 }
 
+combine_sh_df <- function(download_code){
+  
+  sh_paths <- list.files(paste0("raw_data/", download_code), "StreamingHistory", full.names = TRUE)
+  
+  combined_sh_df <- lapply(sh_paths, read_sh_df) %>% 
+                    reduce(rbind)
+  
+  return(combined_sh_df)
+}
+
+
 #################################
 # tabulate listen count by song #
 #################################
 
 save_song_count <- function(download_code){
 
-    song_count <- read_sh_df(download_code) %>% 
+    song_count <- combine_sh_df(download_code) %>% 
                   group_by(song, artist) %>% 
                   summarise(
                     listens = n()
@@ -38,7 +48,7 @@ lapply(download_codes, save_song_count)
 
 save_artist_count <- function(download_code){
   
-  artist_count <- read_sh_df(download_code) %>% 
+  artist_count <- combine_sh_df(download_code) %>% 
     group_by(artist) %>% 
     summarise(
       listens = n()
