@@ -7,7 +7,8 @@ zzz <- c("Death Cab for Cutie",
          "Anna of the North",
          "The Cinematic Orchestra",
          "The Fray",
-         "Wet")
+         "Wet",
+         "Dean Lewis")
 
 read_count_df <- function(download_code, level){
   
